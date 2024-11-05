@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: Order ID Generation API
+  description: API for generating and retrieving Order Identities with system-agnostic unique identifiers.
+  version: 0.0.1
+
+paths:
+  /orderIDs:
+    post:
+      summary: Generate new order IDs
+      description: Creates and returns a globally unique Order Identity in the format `{Display ID}-{Complement ID}-Version`.
+      operationId: createOrderID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodeID:
+                  type: integer
+                  description: "Unique node identifier for the generator (1-255)."
+                  example: 5
+                sequenceNumber:
+                  type: integer
+                  description: "Non-unique sequence number generated per node."
+                  example: 123456
+                version:
+                  type: integer
+                  description: "Version of the SOIM format to be used for identity."
+                  example: 1
+              required:
+                - nodeID
+                - sequenceNumber
+                - version
+      responses:
+        '200':
+          description: Successful generation of order ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  orderID:
+                    type: string
+                    description: "Full SOIM format order ID."
+                    example: "643603667651-1S1334GYRSJMZVJ38W-1"
+                  displayID:
+                    type: string
+                    description: "Display part of the order ID, human-readable."
+                    example: "643603667651"
+                  complementID:
+                    type: string
+                    description: "Complement part of the order ID, machine-readable."
+                    example: "1S1334GYRSJMZVJ38W"
+                  version:
+                    type: integer
+                    description: "Version of the order format."
+                    example: 1
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Invalid parameters in request"
+
+    get:
+      summary: Retrieve last created order ID
+      description: Returns the details of the last created Order Identity.
+      operationId: getLastOrderID
+      responses:
+        '200':
+          description: Successful retrieval of last created order ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  lastOrder:
+                    type: object
+                    properties:
+                      orderID:
+                        type: string
+                        description: "Full SOIM format order ID."
+                        example: "003914737010-09I1NRTQYUJDZTWJC9-1"
+                      displayID:
+                        type: string
+                        description: "Display part of the order ID, human-readable."
+                        example: "003914737010"
+                      complementID:
+                        type: string
+                        description: "Complement part of the order ID, machine-readable."
+                        example: "09I1NRTQYUJDZTWJC9"
+                      nodeID:
+                        type: integer
+                        description: "Node ID used in creation."
+                        example: 5
+                      sequenceNumber:
+                        type: integer
+                        description: "Sequence number associated with last created order."
+                        example: 123456
+                      version:
+                        type: integer
+                        description: "Version of the order format."
+                        example: 1
+        '404':
+          description: No order IDs found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "No order IDs have been created yet."
+
+components:
+  schemas:
+    OrderID:
+      type: object
+      properties:
+        orderID:
+          type: string
+          description: "Full format order ID"
