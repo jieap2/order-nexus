@@ -40,7 +40,7 @@ class OrderIDControllerTest {
         Mockito.`when`(tracer.nextSpan()).thenReturn(mockSpan)
     }
 
-    @Test
+/*    @Test
     fun `should create order ID`() {
         val orderID = OrderID(
             orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
@@ -63,7 +63,7 @@ class OrderIDControllerTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("success"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.orderID").value("123456789012-1S1334GYRSJMZVJ38W-1"))
-    }
+    }*/
 
     @Test
     fun `should get last order ID`() {
@@ -81,5 +81,68 @@ class OrderIDControllerTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("success"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastOrder.orderID").value("123456789012-1S1334GYRSJMZVJ38W-1"))
+    }
+
+    @Test
+    fun `should create order IDs`() {
+        val orderID1 = OrderID(
+            orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
+            displayID = "123456789012",
+            complementID = "1S1334GYRSJMZVJ38W",
+            nodeID = 5,
+            sequenceNumber = 123456,
+            version = 1
+        )
+        val orderID2 = OrderID(
+            orderID = "123456789012-1S1334GYRSJMZVJ38W-2",
+            displayID = "123456789013",
+            complementID = "1S1334GYRSJMZVJ38W",
+            nodeID = 6,
+            sequenceNumber = 123457,
+            version = 1
+        )
+        Mockito.`when`(orderIDService.createOrderID(5, 123456, 1)).thenReturn(orderID1)
+        Mockito.`when`(orderIDService.createOrderID(6, 123457, 1)).thenReturn(orderID2)
+
+        val requests = listOf(
+            CreateOrderIDRequest(5, 123456, 1),
+            CreateOrderIDRequest(6, 123457, 1)
+        )
+        val requestJson = jacksonObjectMapper().writeValueAsString(requests)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/orderIDs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].status").value("success"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].orderID").value("123456789012-1S1334GYRSJMZVJ38W-1"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].status").value("success"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].orderID").value("123456789012-1S1334GYRSJMZVJ38W-2"))
+    }
+    @Test
+    fun `should create single order ID`() {
+        val orderID = OrderID(
+            orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
+            displayID = "123456789012",
+            complementID = "1S1334GYRSJMZVJ38W",
+            nodeID = 5,
+            sequenceNumber = 123456,
+            version = 1
+        )
+        Mockito.`when`(orderIDService.createOrderID(5, 123456, 1)).thenReturn(orderID)
+
+        val requests = listOf(CreateOrderIDRequest(5, 123456, 1))
+        val requestJson = jacksonObjectMapper().writeValueAsString(requests)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/orderIDs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].status").value("success"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].orderID").value("123456789012-1S1334GYRSJMZVJ38W-1"))
     }
 }

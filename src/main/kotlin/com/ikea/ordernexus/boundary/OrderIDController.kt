@@ -18,11 +18,16 @@ class OrderIDController(
 ) {
 
     @PostMapping
-    fun createOrderID(@RequestBody request: CreateOrderIDRequest): ResponseEntity<OrderIDResponse> {
-        val span = tracer.nextSpan().name("OrderIDController.createOrderID").start()
+    fun createOrderIDs(@RequestBody requests: List<CreateOrderIDRequest>): ResponseEntity<List<OrderIDResponse>> {
+        val span = tracer.nextSpan().name("OrderIDController.createOrderIDs").start()
         return tracer.withSpanInScope(span).use {
-            val orderID = orderIDService.createOrderID(request.nodeID, request.sequenceNumber, request.version)
-            ResponseEntity.ok(OrderIDResponse("success", orderID.orderID, orderID.displayID, orderID.complementID, orderID.version))
+            val orderIDs = requests.map { request ->
+                orderIDService.createOrderID(request.nodeID, request.sequenceNumber, request.version)
+            }
+            val response = orderIDs.map { orderID ->
+                OrderIDResponse("success", orderID.orderID, orderID.displayID, orderID.complementID, orderID.version)
+            }
+            ResponseEntity.ok(response)
         }.also {
             span.finish()
         }
