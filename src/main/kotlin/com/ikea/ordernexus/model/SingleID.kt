@@ -7,7 +7,7 @@ import jakarta.persistence.Id
 
 
 @Entity
-data class OrderID(
+data class SingleID(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val orderID: String,
@@ -16,4 +16,15 @@ data class OrderID(
     val nodeID: Int,
     val sequenceNumber: Int,
     val version: Int
-)
+) {
+    constructor() : this(
+        orderID = "",
+        displayID = "",
+        complementID = "",
+        nodeID = 0,
+        sequenceNumber = 0,
+        version = 0
+    ) {
+
+    }
+}

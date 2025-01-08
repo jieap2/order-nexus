@@ -14,11 +14,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import brave.Tracer
 import brave.Span
-import com.ikea.ordernexus.model.OrderID
+import com.ikea.ordernexus.model.SingleID
 import com.ikea.ordernexus.service.OrderIDService
 
 @WebMvcTest(OrderIDController::class)
-class OrderIDControllerTest {
+class SingleIDControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -67,7 +67,7 @@ class OrderIDControllerTest {
 
     @Test
     fun `should get last order ID`() {
-        val orderID = OrderID(
+        val orderID = SingleID(
             orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
             displayID = "123456789012",
             complementID = "1S1334GYRSJMZVJ38W",
@@ -85,7 +85,7 @@ class OrderIDControllerTest {
 
     @Test
     fun `should create order IDs`() {
-        val orderID1 = OrderID(
+        val orderID1 = SingleID(
             orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
             displayID = "123456789012",
             complementID = "1S1334GYRSJMZVJ38W",
@@ -93,7 +93,7 @@ class OrderIDControllerTest {
             sequenceNumber = 123456,
             version = 1
         )
-        val orderID2 = OrderID(
+        val orderID2 = SingleID(
             orderID = "123456789012-1S1334GYRSJMZVJ38W-2",
             displayID = "123456789013",
             complementID = "1S1334GYRSJMZVJ38W",
@@ -123,7 +123,7 @@ class OrderIDControllerTest {
     }
     @Test
     fun `should create single order ID`() {
-        val orderID = OrderID(
+        val orderID = SingleID(
             orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
             displayID = "123456789012",
             complementID = "1S1334GYRSJMZVJ38W",

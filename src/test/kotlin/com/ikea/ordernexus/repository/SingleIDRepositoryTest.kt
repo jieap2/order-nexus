@@ -2,7 +2,7 @@ package com.ikea.ordernexus.repository
 
 
 
-import com.ikea.ordernexus.model.OrderID
+import com.ikea.ordernexus.model.SingleID
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @DataJpaTest
-class OrderIDRepositoryTest {
+class SingleIDRepositoryTest {
 
     @Autowired
     private lateinit var orderIDRepository: OrderIDRepository
@@ -21,7 +21,7 @@ class OrderIDRepositoryTest {
     @Test
     fun `should find the last order ID`() {
         // Given
-        val orderID1 = OrderID(
+        val orderID1 = SingleID(
             orderID = "123456789012-1S1334GYRSJMZVJ38W-1",
             displayID = "123456789012",
             complementID = "1S1334GYRSJMZVJ38W",
@@ -29,7 +29,7 @@ class OrderIDRepositoryTest {
             sequenceNumber = 123456,
             version = 1
         )
-        val orderID2 = OrderID(
+        val orderID2 = SingleID(
             orderID = "123456789013-1S1334GYRSJMZVJ38W-2",
             displayID = "123456789013",
             complementID = "1S1334GYRSJMZVJ38W",
